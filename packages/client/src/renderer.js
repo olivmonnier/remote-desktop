@@ -20,12 +20,12 @@ function handlerPeer(peer, socket) {
   peer.on('close', () => peer.destroy());
 }
 
-function handleStream(stream) {
-  const video = document.querySelector('video');
+// function handleStream(stream) {
+//   const video = document.querySelector('video');
 
-  video.srcObject = stream;
-  video.onloadedmetadata = (e) => video.play();
-}
+//   video.srcObject = stream;
+//   video.onloadedmetadata = (e) => video.play();
+// }
 
 function onMessage(data) {
   console.log(data);
@@ -35,7 +35,7 @@ function onMessage(data) {
   if (state === 'ready') {
     media()
       .then((stream) => {
-        handleStream(stream);
+        // handleStream(stream);
         peers[peerId] = new SimplePeer({ initiator: true, stream });
         handlerPeer(peers[peerId], socket);
       });
