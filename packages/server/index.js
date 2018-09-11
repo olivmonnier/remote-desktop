@@ -6,6 +6,7 @@ const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 const PORT = process.env.PORT || 8080;
+const MESSAGE = 'MESSAGE';
 
 app.engine('html', ejs.renderFile);
 app.use(express.static(__dirname + '/dist'));
@@ -19,8 +20,8 @@ io.on('connection', function (socket) {
 
   socket.join(room);
 
-  socket.on('message', (data) => {
-    socket.broadcast.to(room).emit('message', data)
+  socket.on(MESSAGE, (data) => {
+    socket.broadcast.to(room).emit(MESSAGE, data)
   })
 
   socket.on('disconnect', () => {

@@ -1,4 +1,4 @@
-const contraints = {
+const contraintsDefault = {
   audio: {
     mandatory: {
       chromeMediaSource: 'desktop'
@@ -11,6 +11,6 @@ const contraints = {
   }
 }
 
-export default function () {
-  return navigator.mediaDevices.getUserMedia(contraints)
+export default function (contraints) {
+  return navigator.mediaDevices.getUserMedia(contraints || contraintsDefault)
 }
