@@ -17,7 +17,39 @@ function handlerPeer(peer, socket) {
   peer.on('signal', signal => socket.emit(MESSAGE, JSON.stringify({
     state: CONNECT,
     signal
-  })))
+  })));
+
+  peer.on('data', function(data) {
+    const d = JSON.parse(data.toString('utf8'));
+
+    console.log(d);
+
+    const { state, mouse, button, double, keys } = d;
+
+    if (state === MOUSE_MOVE) {
+      const { x: X, y: Y } = robot.getMousePos();
+  
+      robot.moveMouse(X + mouse.x, Y + mouse.y);
+    }
+    else if (state === MOUSE_CLICK) {
+      robot.mouseClick(button, double);
+    } 
+    else if (state === KEY_PRESS) {
+      const { alt, ctrl, shift, meta, string } = keys;
+  
+      if (alt) robot.keyToggle('alt', 'down');
+      if (ctrl) robot.keyToggle('control', 'down');
+      if (shift) robot.keyToggle('shift', 'down');
+      if (meta) robot.keyToggle('command', 'down');
+  
+      if (string) robot.typeString(string);
+  
+      if (alt) robot.keyToggle('alt', 'up');
+      if (ctrl) robot.keyToggle('control', 'up');
+      if (shift) robot.keyToggle('shift', 'up');
+      if (meta) robot.keyToggle('command', 'up');
+    }
+  });
 
   peer.on('close', () => peer.destroy());
 }
@@ -25,7 +57,7 @@ function handlerPeer(peer, socket) {
 function onMessage(data) {
   console.log(data);
 
-  const { state, signal, peerId, mouse, button, double, keys } = JSON.parse(data);
+  const { state, signal, peerId } = JSON.parse(data);
 
   if (state === READY) {
     getUserMedia()
@@ -36,29 +68,6 @@ function onMessage(data) {
   } 
   else if (state === CONNECT) {
     peers[peerId].signal(signal);
-  }
-  else if (state === MOUSE_MOVE) {
-    const { x: X, y: Y } = robot.getMousePos();
-
-    robot.moveMouse(X + mouse.x, Y + mouse.y);
-  }
-  else if (state === MOUSE_CLICK) {
-    robot.mouseClick(button, double);
-  } 
-  else if (state === KEY_PRESS) {
-    const { alt, ctrl, shift, meta, code, string } = keys;
-
-    if (alt) robot.keyToggle('alt', 'down');
-    if (ctrl) robot.keyToggle('control', 'down');
-    if (shift) robot.keyToggle('shift', 'down');
-    if (meta) robot.keyToggle('command', 'down');
-
-    if (string) robot.typeString(string);
-
-    if (alt) robot.keyToggle('alt', 'up')
-    if (ctrl) robot.keyToggle('control', 'up')
-    if (shift) robot.keyToggle('shift', 'up')
-    if (meta) robot.keyToggle('command', 'up')
   }
 }
 
