@@ -12,5 +12,11 @@ const contraintsDefault = {
 }
 
 export default function (contraints) {
-  return navigator.mediaDevices.getUserMedia(contraints || contraintsDefault)
+  const c = contraints || contraintsDefault;
+
+  return navigator.mediaDevices.getUserMedia(c)
+    .catch(() => navigator.mediaDevices.getUserMedia(Object.assign({}, c, { audio: false })))
+    .catch((err) => {
+      throw new Error(err.message)
+    });
 }

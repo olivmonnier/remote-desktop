@@ -130,7 +130,7 @@ function sendKeyPressed(e) {
   const shift = e.shiftKey || false
   const meta = e.metaKey || false
   const code = e.which || e.keyCode
-  const string = e.target.value
+  const string = String.fromCharCode(code);
 
   socket.emit(MESSAGE, JSON.stringify({
     state: KEY_PRESS,
