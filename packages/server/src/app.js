@@ -5,7 +5,8 @@ import initTouchEvents from './touchEvents';
 import { CONNECT, READY, MESSAGE } from './constants';
 
 let peer;
-
+const $btnFullscreen = document.querySelector('#fullscreen');
+const $video = document.querySelector('#remoteVideos');
 const socket = io(window.location.origin, {
   query: {
     token: getRoom()
@@ -35,9 +36,8 @@ function handlerPeer(peer, socket) {
     }))
   })
   peer.on('stream', function (stream) {
-    const video = document.querySelector('#remoteVideos')
-    video.srcObject = stream
-    video.play()
+    $video.srcObject = stream
+    $video.play()
   })
   peer.on('close', () => {
     peer.destroy()
@@ -50,8 +50,18 @@ function onConnect() {
   }
   peer = new Peer();
   handlerPeer(peer, socket);
-  initDesktopEvents(peer);
-  initTouchEvents(peer);
+
+  $btnFullscreen.addEventListener('click', function(e) {
+    e.stopPropagation();
+    
+    fullscreen($video);
+  });
+
+  if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+    initTouchEvents(peer);
+  } else {
+    initDesktopEvents(peer);
+  }
 
   socket.emit(MESSAGE, JSON.stringify({
     state: READY,
@@ -71,3 +81,15 @@ function onMessage(data) {
 
 socket.on('connect', onConnect);
 socket.on(MESSAGE, onMessage);
+
+function fullscreen(elem) {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { 
+    elem.msRequestFullscreen();
+  }
+}

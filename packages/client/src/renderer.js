@@ -7,6 +7,16 @@ import * as robot from 'robotjs';
 
 let peers = {};
 
+const SPECIAL_KEYS = new Map([
+  [8, 'backspace'],
+  [9, 'tab'],
+  [13, 'enter'],
+  [27, 'escape'],
+  [37, 'left'],
+  [38, 'up'],
+  [39, 'right'],
+  [40, 'down']
+]);
 const socket = io(config.server.host, {
   query: {
     token: config.channel
@@ -22,7 +32,7 @@ function handlerPeer(peer, socket) {
   peer.on('data', function(data) {
     const d = JSON.parse(data.toString('utf8'));
 
-    console.log(d);
+    // console.log(d);
 
     const { state, mouse, button, double, keys } = d;
 
@@ -35,14 +45,19 @@ function handlerPeer(peer, socket) {
       robot.mouseClick(button, double);
     } 
     else if (state === KEY_PRESS) {
-      const { alt, ctrl, shift, meta, string } = keys;
+      const { alt, ctrl, shift, meta, code, string } = keys;
   
       if (alt) robot.keyToggle('alt', 'down');
       if (ctrl) robot.keyToggle('control', 'down');
       if (shift) robot.keyToggle('shift', 'down');
       if (meta) robot.keyToggle('command', 'down');
   
-      if (string) robot.typeString(string);
+      if (SPECIAL_KEYS.has(code)) {
+        robot.keyTap(SPECIAL_KEYS.get(code));
+      }
+      else if (string) {
+        robot.typeString(string);
+      } 
   
       if (alt) robot.keyToggle('alt', 'up');
       if (ctrl) robot.keyToggle('control', 'up');

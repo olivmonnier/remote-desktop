@@ -58,6 +58,8 @@ export default function(peer) {
   }
   
   function sendKeyPressed(ev) {
+    ev.preventDefault();
+    
     const alt = ev.altKey || false
     const ctrl = ev.ctrlKey || false
     const shift = ev.shiftKey || false
