@@ -32,7 +32,7 @@ function handlerPeer(peer, socket) {
   peer.on('data', function(data) {
     const d = JSON.parse(data.toString('utf8'));
 
-    // console.log(d);
+    console.log(d);
 
     const { state, mouse, button, double, keys } = d;
 
@@ -82,7 +82,9 @@ function onMessage(data) {
       });
   } 
   else if (state === CONNECT) {
-    peers[peerId].signal(signal);
+    if (peers[peerId]) {
+      peers[peerId].signal(signal);
+    }
   }
 }
 

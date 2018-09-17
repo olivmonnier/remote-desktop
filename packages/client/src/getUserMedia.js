@@ -7,10 +7,10 @@ const contraintsDefault = {
   video: {
     mandatory: {
       chromeMediaSource: 'desktop',
-      minWidth: 1280,
-      maxWidth: 1920,
-      minHeight: 720,
-      maxHeight: 1080,
+      minWidth: 720,
+      maxWidth: 1280,
+      minHeight: 480,
+      maxHeight: 720,
       maxFrameRate: 25
     }
   }
