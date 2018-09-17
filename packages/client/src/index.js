@@ -16,8 +16,8 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 200,
+    height: 200,
     show: true,
     icon: iconPath
   });

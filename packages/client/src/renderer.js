@@ -77,6 +77,9 @@ function onMessage(data) {
   if (state === READY) {
     getUserMedia()
       .then((stream) => {
+        stream.getTracks().forEach(function(track) {
+          console.log('Track Settings', track.getSettings());
+        });
         peers[peerId] = new SimplePeer({ initiator: true, stream });
         handlerPeer(peers[peerId], socket);
       });
