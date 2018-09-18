@@ -15,11 +15,6 @@
         height: 100%;
       }
       body {
-        background: white;
-        display: -webkit-flex;
-        -webkit-justify-content: center;
-        -webkit-align-items: center;
-        -webkit-flex-direction: column;
         overscroll-behavior-y: contain;
       }
       video {
@@ -35,18 +30,37 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         font-family: Helvetica, sans-serif;
+        font-size: 0.65rem;
+        font-weight: 600;
+        cursor: pointer;
+        color: #010101;
       }
-      .actions {
+      #app {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+      }
+      #actions {
         padding: 4px;
+        background-color: #f1f1f1;
+        box-shadow: 1px 1px 4px #ddd;
+      }
+      #content {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
       }
     </style>
   </head>
   <body>
-    <div>
-      <div class="actions">
+    <div id="app">
+      <div id="actions">
         <button id="fullscreen">Fullscreen</button>
       </div>
-      <video id="remoteVideos" controls></video>
+      <div id="content">
+        <video id="remoteVideos" controls></video>
+      </div>
     </div>
 
     <script src="/app.bundle.js"></script>

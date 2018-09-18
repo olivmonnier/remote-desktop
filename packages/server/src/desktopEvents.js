@@ -1,19 +1,19 @@
 import { MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from './constants';
 
-const $video = document.querySelector('video');
+const $content = document.querySelector('#content');
 const mouseButtons = {
   0: 'left',
   1: 'middle',
   2: 'right'
 }
 
-$video.requestPointerLock = $video.requestPointerLock ||
-$video.mozRequestPointerLock ||
-$video.webkitPointerLockElement;
+$content.requestPointerLock = $content.requestPointerLock ||
+$content.mozRequestPointerLock ||
+$content.webkitPointerLockElement;
 
 export default function(peer) {
-  $video.addEventListener('click', function() {
-    $video.requestPointerLock();
+  $content.addEventListener('click', function() {
+    $content.requestPointerLock();
   });
   
   document.addEventListener('pointerlockchange', lockChange, false);
@@ -21,7 +21,7 @@ export default function(peer) {
   document.addEventListener('webkitpointerlockchange', lockChange, false);
 
   function lockChange() {
-    if (document.pointerLockElement === $video) {
+    if (document.pointerLockElement === $content) {
       document.addEventListener('mousemove', sendPosition, false);
       document.addEventListener('click', sendClick, false);
       document.addEventListener('dblclick', sendDblClick, false);
