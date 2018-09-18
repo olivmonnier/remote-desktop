@@ -35,6 +35,9 @@
         cursor: pointer;
         color: #010101;
       }
+      button + button {
+        margin-left: 2px;
+      }
       #app {
         display: flex;
         height: 100%;
@@ -51,6 +54,39 @@
         justify-content: center;
         align-items: center;
       }
+      #keyboard {
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: none;
+        height: 100%;
+        width: 100%;
+        background-color: #000;
+        opacity: .75;
+        overflow: auto;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+      }
+      #keyboard.show {
+        display: flex;
+      }
+      #keyboard textarea {
+        padding: 8px;
+        max-width: 350px;
+        background-color: transparent;
+        border: none;
+        font-size: 2em;
+        color: #fff;
+        outline: 0;
+      }
+      #keyboard .close {
+        position: absolute;
+        padding: 20px;
+        top: 0;
+        right: 0;
+        font-size: 2.5em;
+      }
     </style>
   </head>
   <body>
@@ -59,7 +95,11 @@
         <button id="fullscreen">Fullscreen</button>
       </div>
       <div id="content">
-        <video id="remoteVideos" controls></video>
+        <video id="remoteVideos"></video>
+      </div>
+      <div id="keyboard">
+        <span class="close">&times;</span>
+        <textarea></textarea>
       </div>
     </div>
 
