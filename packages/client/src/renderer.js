@@ -80,14 +80,16 @@ function onMessage(data) {
         stream.getTracks().forEach(function(track) {
           console.log('Track Settings', track.getSettings());
         });
+
+        if (peers[peerId] && !peers[peerId].destroyed) {
+          peers[peerId].destroy();
+        }
         peers[peerId] = new SimplePeer({ initiator: true, stream });
         handlerPeer(peers[peerId], socket);
       });
   } 
-  else if (state === CONNECT) {
-    if (peers[peerId]) {
-      peers[peerId].signal(signal);
-    }
+  else if (state === CONNECT && !peers[peerId].connected) {
+    peers[peerId].signal(signal);
   }
 }
 
