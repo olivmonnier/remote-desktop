@@ -1,4 +1,4 @@
-import { MOUSE_MOVE, MOUSE_CLICK } from './constants';
+import { MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from './constants';
 
 let startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
 
@@ -6,7 +6,7 @@ export default function (peer) {
   const $actions = document.querySelector('#actions');
   const $keyboard = document.querySelector('#keyboard');
   const $btnCloseKeyboard = document.querySelector('#keyboard .close');
-  const $input = document.querySelector('#keyboard textarea');
+  const $input = document.querySelector('#keyboard input');
   const $btnKeyboard = document.createElement('button');
 
   $btnKeyboard.textContent = 'Keyboard';
@@ -16,7 +16,7 @@ export default function (peer) {
 
   $btnKeyboard.addEventListener('click', onShowKeyboard);
   $btnCloseKeyboard.addEventListener('click', onHideKeyboard);
-  $input.addEventListener('keyup', onKeyPress);
+  $input.addEventListener('change', onChange);
 
   document.addEventListener('touchstart', onTouchStart);
   document.addEventListener('touchmove', onTouchMove);
@@ -24,25 +24,21 @@ export default function (peer) {
 
   function onShowKeyboard() {
     $keyboard.classList.add('show');
+    $input.focus();
   }
 
   function onHideKeyboard() {
     $keyboard.classList.remove('show');
   }
 
-  function onKeyPress(ev) {
+  function onChange(ev) {
     ev.preventDefault();
 
-    const alt = ev.altKey || false
-    const ctrl = ev.ctrlKey || false
-    const shift = ev.shiftKey || false
-    const meta = ev.metaKey || false
-    const code = ev.which || ev.keyCode
-    const string = String.fromCharCode(code);
+    const string = $input.value
   
     peer.send(JSON.stringify({
       state: KEY_PRESS,
-      keys: { alt, ctrl, shift, meta, code, string }
+      keys: { string }
     }))
   }
 
