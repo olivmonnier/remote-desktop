@@ -3,10 +3,25 @@ import { MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from './constants';
 let startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
 
 export default function (peer) {
-  const $actions = document.querySelector('#actions');
-  const $keyboard = document.querySelector('#keyboard');
   const $btnCloseKeyboard = document.querySelector('#keyboard .close');
   const $input = document.querySelector('#keyboard input');
+
+  const handleInputChange = (ev) => onChange(ev, peer);
+  const handleTouchStart = (ev) => onTouchStart(ev, peer);
+  const handleTouchMove = (ev) => onTouchMove(ev, peer);
+  const handleClick = (ev) => onClick(ev, peer);
+
+  createBtnKeyboard();
+
+  $btnCloseKeyboard.addEventListener('click', onHideKeyboard);
+  $input.addEventListener('change', handleInputChange);
+  document.addEventListener('touchstart', handleTouchStart);
+  document.addEventListener('touchmove', handleTouchMove);
+  document.addEventListener('click', handleClick);
+}
+
+function createBtnKeyboard() {
+  const $actions = document.querySelector('#actions');
   const $btnKeyboard = document.createElement('button');
 
   $btnKeyboard.textContent = 'Keyboard';
@@ -15,86 +30,86 @@ export default function (peer) {
   $actions.appendChild($btnKeyboard);
 
   $btnKeyboard.addEventListener('click', onShowKeyboard);
-  $btnCloseKeyboard.addEventListener('click', onHideKeyboard);
-  $input.addEventListener('change', onChange);
+}
 
-  document.addEventListener('touchstart', onTouchStart);
-  document.addEventListener('touchmove', onTouchMove);
-  document.addEventListener('click', onClick);
+function onShowKeyboard() {
+  const $keyboard = document.querySelector('#keyboard');
+  const $input = document.querySelector('#keyboard input');
 
-  function onShowKeyboard() {
-    $keyboard.classList.add('show');
-    $input.focus();
-  }
+  $keyboard.classList.add('show');
+  $input.focus();
+  $input.setSelectionRange(0, $input.value.length);
+}
 
-  function onHideKeyboard() {
-    $keyboard.classList.remove('show');
-  }
+function onHideKeyboard() {
+  const $keyboard = document.querySelector('#keyboard');
 
-  function onChange(ev) {
-    ev.preventDefault();
+  $keyboard.classList.remove('show');
+}
 
-    const string = $input.value
+function onChange(ev, peer) {
+  ev.preventDefault();
+
+  const string = ev.target.value
+
+  peer.send(JSON.stringify({
+    state: KEY_PRESS,
+    keys: { string }
+  }))
+}
+
+function onTouchStart(ev) {
+  ev.preventDefault();
+
+  startX = getCoord(ev, 'X');
+  startY = getCoord(ev, 'Y');
+  diffX = 0;
+  diffY = 0;
+}
+
+function onTouchMove(ev, peer) {
+  ev.preventDefault();
+
+  endX = getCoord(ev, 'X');
+  endY = getCoord(ev, 'Y');
+  diffX = endX - startX;
+  diffY = endY - startY;
+
+  peer.send(JSON.stringify({
+    state: MOUSE_MOVE,
+    mouse: { x: diffX, y: diffY }
+  }));
   
+  startX = endX;
+  startY = endY;
+}
+
+function onClick(ev, peer) {
+  ev.preventDefault();
+
+  const now = new Date().getTime();
+  const timesince = now - latesttap;
+
+  if ((timesince < 500) && (timesince > 0)) {
     peer.send(JSON.stringify({
-      state: KEY_PRESS,
-      keys: { string }
+      state: MOUSE_CLICK,
+      button: 'left',
+      double: true
     }))
-  }
-
-  function onTouchStart(e) {
-    e.preventDefault();
-
-    startX = getCoord(e, 'X');
-    startY = getCoord(e, 'Y');
-    diffX = 0;
-    diffY = 0;
-  }
-  
-  function onTouchMove(e) {
-    e.preventDefault();
-
-    endX = getCoord(e, 'X');
-    endY = getCoord(e, 'Y');
-    diffX = endX - startX;
-    diffY = endY - startY;
-  
-    peer.send(JSON.stringify({
-      state: MOUSE_MOVE,
-      mouse: { x: diffX, y: diffY }
-    }));
-    
-    startX = endX;
-    startY = endY;
-  }
-
-  function onClick(e) {
-    e.preventDefault();
-
-    const now = new Date().getTime();
-    const timesince = now - latesttap;
-
-    if ((timesince < 500) && (timesince > 0)) {
+    clearTimeout(taptimeout);
+  } else {
+    taptimeout = setTimeout(() => {
       peer.send(JSON.stringify({
         state: MOUSE_CLICK,
         button: 'left',
-        double: true
+        double: false
       }))
-      clearTimeout(taptimeout);
-    } else {
-      taptimeout = setTimeout(() => {
-        peer.send(JSON.stringify({
-          state: MOUSE_CLICK,
-          button: 'left',
-          double: false
-        }))
-      }, 550)
-    }
-        
-    latesttap = new Date().getTime();
+    }, 550)
   }
-  
-  function getCoord(e, c) {
-    return /touch/.test(e.type) ? (e.originalEvent || e).changedTouches[0]['page' + c] : e['page' + c];
-  }
+      
+  latesttap = new Date().getTime();
+}
+
+function getCoord(ev, c) {
+  return /touch/.test(ev.type) ? (ev.originalEvent || ev).changedTouches[0]['page' + c] : ev['page' + c];
 }
