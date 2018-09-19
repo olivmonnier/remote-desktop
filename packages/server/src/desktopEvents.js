@@ -1,18 +1,18 @@
-import { MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from './constants';
+import {
+  sendPosition,
+  sendClick,
+  sendDblClick,
+  sendKeyPressed
+} from './controls';
 
 const $content = document.querySelector('#content');
-const mouseButtons = {
-  0: 'left',
-  1: 'middle',
-  2: 'right'
-}
-
-$content.requestPointerLock = $content.requestPointerLock ||
-$content.mozRequestPointerLock ||
-$content.webkitPointerLockElement;
 
 export default function(peer) {
-  const handleLockChange = () => lockChange(peer);
+  const handleLockChange = lockChange(peer);
+  
+  $content.requestPointerLock = $content.requestPointerLock ||
+  $content.mozRequestPointerLock ||
+  $content.webkitPointerLockElement;
 
   $content.addEventListener('click', function() {
     $content.requestPointerLock();
@@ -21,6 +21,7 @@ export default function(peer) {
   document.addEventListener('pointerlockchange', handleLockChange, false);
   document.addEventListener('mozpointerlockchange', handleLockChange, false);
   document.addEventListener('webkitpointerlockchange', handleLockChange, false);
+
 }
 
 function lockChange(peer) {
@@ -29,54 +30,17 @@ function lockChange(peer) {
   const handleDblClick = (ev) => sendDblClick(ev, peer);
   const handleKeypress = (ev) => sendKeyPressed(ev, peer);
 
-  if (document.pointerLockElement === $content) {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('click', handleClick, false);
-    document.addEventListener('dblclick', handleDblClick, false);
-    document.addEventListener('keypress', handleKeypress, false);
-  } else {
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('click', handleClick, false);
-    document.removeEventListener('dblclick', handleDblClick, false);
-    document.removeEventListener('keypress', handleKeypress, false);
+  return () => {
+    if (document.pointerLockElement === $content) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('click', handleClick, false);
+      document.addEventListener('dblclick', handleDblClick, false);
+      document.addEventListener('keypress', handleKeypress, false);
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('click', handleClick, false);
+      document.removeEventListener('dblclick', handleDblClick, false);
+      document.removeEventListener('keypress', handleKeypress, false);
+    }
   }
-}
-
-function sendPosition(ev, peer) {
-  peer.send(JSON.stringify({
-    state: MOUSE_MOVE,
-    mouse: { x: ev.movementX, y: ev.movementY }
-  }))
-}
-
-function sendClick(ev, peer) {
-  peer.send(JSON.stringify({
-    state: MOUSE_CLICK,
-    button: mouseButtons[ev.button],
-    double: false
-  }))
-}
-
-function sendDblClick(ev, peer) {
-  peer.send(JSON.stringify({
-    state: MOUSE_CLICK,
-    button: mouseButtons[ev.button],
-    double: true
-  }))
-}
-
-function sendKeyPressed(ev, peer) {
-  ev.preventDefault();
-  
-  const alt = ev.altKey || false
-  const ctrl = ev.ctrlKey || false
-  const shift = ev.shiftKey || false
-  const meta = ev.metaKey || false
-  const code = ev.which || ev.keyCode
-  const string = String.fromCharCode(code);
-
-  peer.send(JSON.stringify({
-    state: KEY_PRESS,
-    keys: { alt, ctrl, shift, meta, code, string }
-  }))
 }
