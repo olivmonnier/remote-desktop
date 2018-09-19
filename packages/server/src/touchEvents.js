@@ -3,17 +3,18 @@ import {
   sendPosition,
   sendClick
 } from './controls';
+import getCoordinates from './utils/getCoordinates';
 
 let startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
 
-export default function (peer) {
+export default function () {
   const $btnCloseKeyboard = document.querySelector('#keyboard .close');
   const $input = document.querySelector('#keyboard input');
 
-  const handleInputChange = (ev) => onChange(ev, peer);
-  const handleTouchStart = (ev) => onTouchStart(ev, peer);
-  const handleTouchMove = (ev) => onTouchMove(ev, peer);
-  const handleClick = (ev) => onClick(ev, peer);
+  const handleInputChange = (ev) => onChange(ev, window.peer);
+  const handleTouchStart = (ev) => onTouchStart(ev, window.peer);
+  const handleTouchMove = (ev) => onTouchMove(ev, window.peer);
+  const handleClick = (ev) => onClick(ev, window.peer);
 
   createBtnKeyboard();
 
@@ -62,8 +63,8 @@ function onChange(ev, peer) {
 function onTouchStart(ev) {
   ev.preventDefault();
 
-  startX = getCoord(ev, 'X');
-  startY = getCoord(ev, 'Y');
+  startX = getCoordinates(ev, 'X');
+  startY = getCoordinates(ev, 'Y');
   diffX = 0;
   diffY = 0;
 }
@@ -71,8 +72,8 @@ function onTouchStart(ev) {
 function onTouchMove(ev, peer) {
   ev.preventDefault();
 
-  endX = getCoord(ev, 'X');
-  endY = getCoord(ev, 'Y');
+  endX = getCoordinates(ev, 'X');
+  endY = getCoordinates(ev, 'Y');
   diffX = endX - startX;
   diffY = endY - startY;
 
@@ -98,8 +99,4 @@ function onClick(ev, peer) {
   }
       
   latesttap = new Date().getTime();
-}
-
-function getCoord(ev, c) {
-  return /touch/.test(ev.type) ? (ev.originalEvent || ev).changedTouches[0]['page' + c] : ev['page' + c];
 }

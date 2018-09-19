@@ -6,8 +6,8 @@ import {
 
 const $content = document.querySelector('#content');
 
-export default function(peer) {
-  const handleLockChange = lockChange(peer);
+export default function() {
+  const handleLockChange = lockChange();
   
   $content.requestPointerLock = $content.requestPointerLock ||
   $content.mozRequestPointerLock ||
@@ -17,27 +17,26 @@ export default function(peer) {
     $content.requestPointerLock();
   });
 
-  document.addEventListener('pointerlockchange', handleLockChange, false);
-  document.addEventListener('mozpointerlockchange', handleLockChange, false);
-  document.addEventListener('webkitpointerlockchange', handleLockChange, false);
-
+  document.addEventListener('pointerlockchange', handleLockChange);
+  document.addEventListener('mozpointerlockchange', handleLockChange);
+  document.addEventListener('webkitpointerlockchange', handleLockChange);
 }
 
-function lockChange(peer) {
+function lockChange() {
   const handleMouseMove = (ev) => {
     const { movementX, movementY } = ev;
 
-    return sendPosition(peer)(movementX, movementY);
+    return sendPosition(window.peer)(movementX, movementY);
   };
   const handleClick = (ev) => {
     const { button } = ev;
 
-    return sendClick(peer)(button, false);
+    return sendClick(window.peer)(button, false);
   };
   const handleDblClick = (ev) => {
     const { button } = ev;
 
-    return sendClick(peer)(button, true);
+    return sendClick(window.peer)(button, true);
   }
   const handleKeypress = (ev) => {
     ev.preventDefault();
@@ -49,7 +48,7 @@ function lockChange(peer) {
     const code = ev.which || ev.keyCode
     const string = String.fromCharCode(code);
 
-    return sendKeyPressed(peer)({ alt, ctrl, shift, meta, code, string });
+    return sendKeyPressed(window.peer)({ alt, ctrl, shift, meta, code, string });
   };
 
   return () => {

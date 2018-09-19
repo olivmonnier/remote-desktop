@@ -2,9 +2,9 @@ import Peer from 'simple-peer';
 import io from 'socket.io-client';
 import initDesktopEvents from './desktopEvents';
 import initTouchEvents from './touchEvents';
+import fullscreen from './utils/fullscreen';
+import getRoom from './utils/getRoom';
 import { CONNECT, READY, MESSAGE } from './constants';
-
-let peer;
 
 const socket = io(window.location.origin, {
   query: {
@@ -13,22 +13,14 @@ const socket = io(window.location.origin, {
 });
 
 socket.on('connect', () => { 
-  peer = onConnect(peer, socket);
+  window.peer = onConnect(window.peer, socket);
 });
-socket.on(MESSAGE, (data) => onMessage(data, peer));
+socket.on(MESSAGE, (data) => onMessage(data, window.peer));
 
-function getRoom() {
-  let room = localStorage.getItem('channel');
-
-  if (!room) {
-    room = prompt('Enter a room');
-
-    if (room !== '') {
-      localStorage.setItem('channel', room);
-    }
-  }
-
-  return room;
+if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+  initTouchEvents();
+} else {
+  initDesktopEvents();
 }
 
 function handlerPeer(peer, socket) {
@@ -66,12 +58,6 @@ function onConnect(peer, socket) {
     fullscreen($video);
   });
 
-  if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-    initTouchEvents(newPeer);
-  } else {
-    initDesktopEvents(newPeer);
-  }
-
   socket.emit(MESSAGE, JSON.stringify({
     state: READY,
     peerId: newPeer._id
@@ -87,17 +73,5 @@ function onMessage(data, peer) {
 
   if (state === CONNECT && !peer.connected) {
     peer.signal(signal);
-  }
-}
-
-function fullscreen(elem) {
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.mozRequestFullScreen) {
-    elem.mozRequestFullScreen();
-  } else if (elem.webkitRequestFullscreen) {
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { 
-    elem.msRequestFullscreen();
   }
 }
