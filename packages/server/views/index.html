@@ -71,11 +71,11 @@
       #keyboard.show {
         display: flex;
       }
-      #keyboard input {
+      #keyboard > input {
         padding: 8px;
         max-width: 350px;
         background-color: transparent;
-        border: none;
+        border: 1px solid #fff;
         font-size: 2em;
         color: #fff;
         outline: 0;
@@ -86,6 +86,75 @@
         top: 0;
         right: 0;
         font-size: 2.5em;
+        line-height: .5;
+      }
+      #specialButtons, #specialKeys {
+        padding: 8px;
+      }
+      #specialButtons button {
+        font-size: 1rem;
+        color: #fff;
+        background-color: transparent;
+        border: 1px solid #fff;
+      }
+      #specialButtons button + button {
+        margin-left: 8px;
+      }
+      .commands {
+        position: absolute;
+        bottom: 0;
+        padding: 15px;
+        width: 100%;
+      }
+      .checkbox {
+        display: inline-block;
+        position: relative;
+        padding-left: 32px;
+        cursor: pointer;
+        font-family: Helvetica, sans-serif;
+        font-size: 18px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      .checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        border: 1px solid #fff;
+      }
+
+      .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+
+      .checkbox input:checked ~ .checkmark:after {
+        display: block;
+      }
+
+      .checkbox .checkmark:after {
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+      }
+      .checkbox + .checkbox {
+        margin-left: 8px;
       }
     </style>
   </head>
@@ -100,6 +169,27 @@
       <div id="keyboard">
         <span class="close">&times;</span>
         <input type="text" />
+        <div class="commands">
+          <div id="specialButtons">
+            <button id="btnBackspace">BACKSPACE</button>
+            <button id="btnTab">TAB</button>
+            <button id="btnEnter">ENTER</button>
+          </div>
+          <div id="specialKeys">
+            <label class="checkbox">CTRL
+              <input type="checkbox" id="keyCTRL"/>
+              <span class="checkmark"></span>
+            </label>
+            <label class="checkbox">ALT
+              <input type="checkbox" id="keyALT"/>
+              <span class="checkmark"></span>
+            </label>
+            <label class="checkbox">SHIFT
+              <input type="checkbox" id="keySHIFT"/>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
 
