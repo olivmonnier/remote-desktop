@@ -1,4 +1,8 @@
-import { MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from './constants';
+import {
+  sendKeyPressed,
+  sendPosition,
+  sendClick
+} from './controls';
 
 let startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
 
@@ -52,10 +56,7 @@ function onChange(ev, peer) {
 
   const string = ev.target.value
 
-  peer.send(JSON.stringify({
-    state: KEY_PRESS,
-    keys: { string }
-  }))
+  return sendKeyPressed(peer)({ string });
 }
 
 function onTouchStart(ev) {
@@ -75,10 +76,7 @@ function onTouchMove(ev, peer) {
   diffX = endX - startX;
   diffY = endY - startY;
 
-  peer.send(JSON.stringify({
-    state: MOUSE_MOVE,
-    mouse: { x: diffX, y: diffY }
-  }));
+  sendPosition(peer)(diffX, diffY);
   
   startX = endX;
   startY = endY;
@@ -91,19 +89,11 @@ function onClick(ev, peer) {
   const timesince = now - latesttap;
 
   if ((timesince < 500) && (timesince > 0)) {
-    peer.send(JSON.stringify({
-      state: MOUSE_CLICK,
-      button: 'left',
-      double: true
-    }))
+    sendClick(peer)(0, true);
     clearTimeout(taptimeout);
   } else {
     taptimeout = setTimeout(() => {
-      peer.send(JSON.stringify({
-        state: MOUSE_CLICK,
-        button: 'left',
-        double: false
-      }))
+      sendClick(peer)();
     }, 550)
   }
       
