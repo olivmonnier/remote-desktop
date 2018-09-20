@@ -104,7 +104,7 @@ function onKeyPress(button) {
 
   if (button === '{shift}') 
     return handleShiftButton();
-  else if (button === '{lock}') 
+  else if (button === '{lock}')
     return handleCapsButton();
   else if (button === '{hide}') 
     return onHideKeyboard();
@@ -122,6 +122,8 @@ function onKeyPress(button) {
     return sendKeyPressed(window.peer)({ code: 37 });
   else if (button === '{right}')
     return sendKeyPressed(window.peer)({ code: 39 });
+  else if (button === '{space}')
+    return sendKeyPressed(window.peer)({ string: ' ' });
   else 
     return sendKeyPressed(window.peer)({ string: button });
 }
