@@ -6,34 +6,73 @@ import {
 import getCoordinates from './utils/getCoordinates';
 
 let startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
+const Keyboard = window.SimpleKeyboard.default;
+const keyboard = new Keyboard({
+  onKeyPress: button => onKeyPress(button),
+  layout: {
+    default: [
+      "` 1 2 3 4 5 6 7 8 9 0 - = {bksp}",
+      "{tab} q w e r t y u i o p [ ] \\",
+      "{lock} a s d f g h j k l ; ' {enter}",
+      "{shift} z x c v b n m , . / {shift} {up} {down}",
+      ".com @ {space} {hide} {left} {right}"
+    ],
+    shift: [
+      "~ ! @ # $ % ^ & * ( ) _ + {bksp}",
+      "{tab} Q W E R T Y U I O P { } |",
+      '{lock} A S D F G H J K L : " {enter}',
+      "{shift} Z X C V B N M < > ? {shift} {up} {down}",
+      ".com @ {space} {hide} {left} {right}"
+    ],
+    caps: [
+      "` 1 2 3 4 5 6 7 8 9 0 - = {bksp}",
+      "{tab} Q W E R T Y U I O P [ ] \\",
+      "{lock} A S D F G H J K L ; ' {enter}",
+      "{shift} Z X C V B N M , . / {shift} {up} {down}",
+      ".com @ {space} {hide} {left} {right}"
+    ]
+  },
+  display: {
+    '{bksp}': 'backspace',
+    '{enter}': '< enter',
+    '{shift}': 'shift',
+    '{tab}': 'tab',
+    '{lock}': 'caps',
+    '{accept}': 'Submit',
+    '{space}': ' ',
+    '{//}': ' ',
+    '{hide}': 'hide',
+    '{up}': 'up',
+    '{down}': 'down',
+    '{left}': 'left',
+    '{right}': 'right'
+  },
+  buttonTheme: [
+    {
+      class: "keyboard-input-control",
+      buttons: '{hide} {up} {down} {left} {right}'
+    }
+  ]
+});
 
 export default function () {
-  const $btnCloseKeyboard = document.querySelector('#keyboard .close');
-  const $input = document.querySelector('#keyboard input[type="text"]');
-  const $btnEnter = document.querySelector('#btnEnter');
-  const $btnTab = document.querySelector('#btnTab');
-  const $btnBackspace = document.querySelector('#btnBackspace');
+  const $keyboard = document.querySelector('#keyboard');
 
-  const handleInputChange = (ev) => onChange(ev, window.peer);
-  const handleInputFocus = (ev) => onFocus(ev, window.peer);
-  const handleBtnEnterPressed = (ev) => onBtnEnterPressed(ev, window.peer);
-  const handleBtnTabPressed = (ev) => onBtnTabPressed(ev, window.peer);
-  const handleBtnBackspacePressed = (ev) => onBtnBackspacePressed(ev, window.peer);
+  const handleClickKeyboard = (ev) => onClickKeyboard(ev);
   const handleTouchStart = (ev) => onTouchStart(ev, window.peer);
   const handleTouchMove = (ev) => onTouchMove(ev, window.peer);
   const handleClick = (ev) => onClick(ev, window.peer);
 
   createBtnKeyboard();
 
-  $input.addEventListener('change', handleInputChange);
-  $input.addEventListener('focus', handleInputFocus);
-  $btnEnter.addEventListener('click', handleBtnEnterPressed);
-  $btnTab.addEventListener('click', handleBtnTabPressed);
-  $btnBackspace.addEventListener('click', handleBtnBackspacePressed);
-  $btnCloseKeyboard.addEventListener('click', onHideKeyboard);
+  $keyboard.addEventListener('click', handleClickKeyboard);
   document.addEventListener('touchstart', handleTouchStart);
   document.addEventListener('touchmove', handleTouchMove);
   document.addEventListener('click', handleClick);
+}
+
+function onClickKeyboard(ev) {
+  ev.stopPropagation();
 }
 
 function createBtnKeyboard() {
@@ -50,11 +89,8 @@ function createBtnKeyboard() {
 
 function onShowKeyboard() {
   const $keyboard = document.querySelector('#keyboard');
-  const $input = document.querySelector('#keyboard input[type="text"]');
 
   $keyboard.classList.add('show');
-  $input.focus();
-  $input.setSelectionRange(0, $input.value.length);
 }
 
 function onHideKeyboard() {
@@ -63,22 +99,49 @@ function onHideKeyboard() {
   $keyboard.classList.remove('show');
 }
 
-function onChange(ev, peer) {
-  ev.preventDefault();
+function onKeyPress(button) {
+  console.log(button);
 
-  const ctrl = document.querySelector('#keyCTRL').checked;
-  const alt = document.querySelector('#keyALT').checked;
-  const shift = document.querySelector('#keySHIFT').checked;
-  const string = ev.target.value;
-  const code = string.length === 1 ? string.charCodeAt(0) : null;
-
-  return sendKeyPressed(peer)({ ctrl, alt, shift, string, code });
+  if (button === '{shift}') 
+    return handleShiftButton();
+  else if (button === '{lock}') 
+    return handleCapsButton();
+  else if (button === '{hide}') 
+    return onHideKeyboard();
+  else if (button === '{enter}')
+    return sendKeyPressed(window.peer)({ code: 13 });
+  else if (button === '{bksp}')
+    return sendKeyPressed(window.peer)({ code: 8 });
+  else if (button === '{tab}')
+    return sendKeyPressed(window.peer)({ code: 9 });
+  else if (button === '{up}')
+    return sendKeyPressed(window.peer)({ code: 38 });
+  else if (button === '{down}')
+    return sendKeyPressed(window.peer)({ code: 40 });
+  else if (button === '{left}')
+    return sendKeyPressed(window.peer)({ code: 37 });
+  else if (button === '{right}')
+    return sendKeyPressed(window.peer)({ code: 39 });
+  else 
+    return sendKeyPressed(window.peer)({ string: button });
 }
 
-function onFocus(ev) {
-  ev.preventDefault();
+function handleShiftButton() {
+  let currentLayout = keyboard.options.layoutName;
+  let shiftToggle = currentLayout === "shift" ? "default" : "shift";
 
-  ev.target.setSelectionRange(0, ev.target.value.length);
+  keyboard.setOptions({
+    layoutName: shiftToggle
+  });
+}
+
+function handleCapsButton() {
+  let currentLayout = keyboard.options.layoutName;
+  let shiftToggle = currentLayout === "caps" ? "default" : "caps";
+
+  keyboard.setOptions({
+    layoutName: shiftToggle
+  });
 }
 
 function onTouchStart(ev) {
@@ -120,22 +183,4 @@ function onClick(ev, peer) {
   }
       
   latesttap = new Date().getTime();
-}
-
-function onBtnEnterPressed(ev, peer) {
-  ev.stopPropagation();
-
-  return sendKeyPressed(peer)({ code: 13 });
-}
-
-function onBtnTabPressed(ev, peer) {
-  ev.stopPropagation();
-
-  return sendKeyPressed(peer)({ code: 9 });
-}
-
-function onBtnBackspacePressed(ev, peer) {
-  ev.stopPropagation();
-
-  return sendKeyPressed(peer)({ code: 8 });
 }
