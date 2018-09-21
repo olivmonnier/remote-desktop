@@ -6,6 +6,7 @@ import fullscreen from './utils/fullscreen';
 import getRoom from './utils/getRoom';
 import { CONNECT, READY, MESSAGE } from './constants';
 
+const isTouchScreen = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
 const socket = io(window.location.origin, {
   query: {
     token: getRoom()
@@ -17,7 +18,7 @@ socket.on('connect', () => {
 });
 socket.on(MESSAGE, (data) => onMessage(data, window.peer));
 
-if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+if (isTouchScreen) {
   initTouchEvents();
 } else {
   initDesktopEvents();
@@ -43,7 +44,11 @@ function handlerPeer(peer, socket) {
 }
 
 function onConnect(peer, socket) {
+  const $app = document.querySelector('#app');
+  const $actions = document.querySelector('#actions');
+  const $btnActions = document.querySelector('#btnActions');
   const $btnFullscreen = document.querySelector('#fullscreen');
+  const $btnCloseActions = document.querySelector('#close');
   const $video = document.querySelector('#remoteVideos');
 
   if (peer && !peer.destroyed) {
@@ -52,10 +57,22 @@ function onConnect(peer, socket) {
   const newPeer = new Peer();
   handlerPeer(newPeer, socket);
 
+  $btnActions.addEventListener('click', function() {
+    this.classList.add('hide');
+    $actions.classList.add('show');
+  });
+
   $btnFullscreen.addEventListener('click', function(e) {
     e.stopPropagation();
+
+    const el = isTouchScreen ? $app : $video;
     
-    fullscreen($video);
+    fullscreen(el);
+  });
+
+  $btnCloseActions.addEventListener('click', function(e) {
+    $actions.classList.remove('show');
+    $btnActions.classList.remove('hide');
   });
 
   socket.emit(MESSAGE, JSON.stringify({

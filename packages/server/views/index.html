@@ -17,6 +17,7 @@
       }
       body {
         overscroll-behavior-y: contain;
+        background-color: #000;
       }
       video {
         display: block;
@@ -34,20 +35,40 @@
         font-size: 0.65rem;
         font-weight: 600;
         cursor: pointer;
-        color: #010101;
+        color: #fff;
       }
       button + button {
         margin-left: 2px;
       }
+      #btnActions {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        padding: 8px 30px;
+        transform: translateX(-50%);
+        background-color: #fff;
+        color: #000;
+      }
       #app {
+        position: relative;
         display: flex;
         height: 100%;
         flex-direction: column;
       }
       #actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        display: none;;
+        width: 100%;
         padding: 4px;
-        background-color: #f1f1f1;
-        box-shadow: 1px 1px 4px #ddd;
+        justify-content: space-between;
+      }
+      #actions.show {
+        display: flex !important;
+      }
+      #actions button {
+        padding: 8px 30px;
       }
       #content {
         display: flex;
@@ -62,21 +83,26 @@
         display: none;
         width: 100%;
       }
-      #keyboard.show {
-        display: block;
-      }
       .keyboard-input-control {
         max-width: 60px;
+      }
+      .hide {
+        display: none !important;
+      }
+      .show {
+        display: block !important;
       }
     </style>
   </head>
   <body>
     <div id="app">
-      <div id="actions">
-        <button id="fullscreen">Fullscreen</button>
-      </div>
+      <button id="btnActions">Controls</button>
       <div id="content">
         <video id="remoteVideos"></video>
+      </div>
+      <div id="actions">
+        <button id="fullscreen">Fullscreen</button>
+        <button id="close">Close</button>
       </div>
       <div id="keyboard">
         <div class="simple-keyboard"></div>
