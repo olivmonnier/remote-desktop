@@ -100,6 +100,7 @@ function onHideKeyboard() {
 }
 
 function onKeyPress(button) {
+  const peer = window.peer
   console.log(button);
 
   if (button === '{shift}') 
@@ -109,23 +110,23 @@ function onKeyPress(button) {
   else if (button === '{hide}') 
     return onHideKeyboard();
   else if (button === '{enter}')
-    return sendKeyPressed(window.peer)({ code: 13 });
+    return sendKeyPressed(peer)({ code: 13 });
   else if (button === '{bksp}')
-    return sendKeyPressed(window.peer)({ code: 8 });
+    return sendKeyPressed(peer)({ code: 8 });
   else if (button === '{tab}')
-    return sendKeyPressed(window.peer)({ code: 9 });
+    return sendKeyPressed(peer)({ code: 9 });
   else if (button === '{up}')
-    return sendKeyPressed(window.peer)({ code: 38 });
+    return sendKeyPressed(peer)({ code: 38 });
   else if (button === '{down}')
-    return sendKeyPressed(window.peer)({ code: 40 });
+    return sendKeyPressed(peer)({ code: 40 });
   else if (button === '{left}')
-    return sendKeyPressed(window.peer)({ code: 37 });
+    return sendKeyPressed(peer)({ code: 37 });
   else if (button === '{right}')
-    return sendKeyPressed(window.peer)({ code: 39 });
+    return sendKeyPressed(peer)({ code: 39 });
   else if (button === '{space}')
-    return sendKeyPressed(window.peer)({ string: ' ' });
+    return sendKeyPressed(peer)({ string: ' ' });
   else 
-    return sendKeyPressed(window.peer)({ string: button });
+    return sendKeyPressed(peer)({ string: button });
 }
 
 function handleShiftButton() {

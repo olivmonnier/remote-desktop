@@ -1,5 +1,5 @@
 const { join } = require('path')
-const APP_DIR = join(__dirname, '/src')
+const APP_DIR = join(__dirname, '/src/js')
 const BUILD_DIR = join(__dirname, '/dist')
 
 module.exports = {

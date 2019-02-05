@@ -13379,14 +13379,14 @@ var simple_peer_default = /*#__PURE__*/__webpack_require__.n(simple_peer);
 var lib = __webpack_require__(37);
 var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
 
-// CONCATENATED MODULE: ./src/constants.js
+// CONCATENATED MODULE: ./src/js/constants.js
 var CONNECT = 'CONNECT';
 var READY = 'READY';
 var MESSAGE = 'MESSAGE';
 var MOUSE_MOVE = 'MOUSE_MOVE';
 var MOUSE_CLICK = 'MOUSE_CLICK';
 var KEY_PRESS = 'KEY_PRESS';
-// CONCATENATED MODULE: ./src/controls.js
+// CONCATENATED MODULE: ./src/js/controls.js
 
 var mouseButtons = {
   0: 'left',
@@ -13424,7 +13424,7 @@ function sendKeyPressed(peer) {
     }));
   };
 }
-// CONCATENATED MODULE: ./src/desktopEvents.js
+// CONCATENATED MODULE: ./src/js/desktopEvents.js
 
 var $content = document.querySelector('#content');
 /* harmony default export */ var desktopEvents = (function () {
@@ -13487,11 +13487,11 @@ function lockChange() {
     }
   };
 }
-// CONCATENATED MODULE: ./src/utils/getCoordinates.js
+// CONCATENATED MODULE: ./src/js/utils/getCoordinates.js
 function getCoordinates(ev, c) {
   return /touch/.test(ev.type) ? (ev.originalEvent || ev).changedTouches[0]['page' + c] : ev['page' + c];
 }
-// CONCATENATED MODULE: ./src/touchEvents.js
+// CONCATENATED MODULE: ./src/js/touchEvents.js
 
 
 var startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
@@ -13575,24 +13575,25 @@ function onHideKeyboard() {
 }
 
 function _onKeyPress(button) {
+  var peer = window.peer;
   console.log(button);
-  if (button === '{shift}') return handleShiftButton();else if (button === '{lock}') return handleCapsButton();else if (button === '{hide}') return onHideKeyboard();else if (button === '{enter}') return sendKeyPressed(window.peer)({
+  if (button === '{shift}') return handleShiftButton();else if (button === '{lock}') return handleCapsButton();else if (button === '{hide}') return onHideKeyboard();else if (button === '{enter}') return sendKeyPressed(peer)({
     code: 13
-  });else if (button === '{bksp}') return sendKeyPressed(window.peer)({
+  });else if (button === '{bksp}') return sendKeyPressed(peer)({
     code: 8
-  });else if (button === '{tab}') return sendKeyPressed(window.peer)({
+  });else if (button === '{tab}') return sendKeyPressed(peer)({
     code: 9
-  });else if (button === '{up}') return sendKeyPressed(window.peer)({
+  });else if (button === '{up}') return sendKeyPressed(peer)({
     code: 38
-  });else if (button === '{down}') return sendKeyPressed(window.peer)({
+  });else if (button === '{down}') return sendKeyPressed(peer)({
     code: 40
-  });else if (button === '{left}') return sendKeyPressed(window.peer)({
+  });else if (button === '{left}') return sendKeyPressed(peer)({
     code: 37
-  });else if (button === '{right}') return sendKeyPressed(window.peer)({
+  });else if (button === '{right}') return sendKeyPressed(peer)({
     code: 39
-  });else if (button === '{space}') return sendKeyPressed(window.peer)({
+  });else if (button === '{space}') return sendKeyPressed(peer)({
     string: ' '
-  });else return sendKeyPressed(window.peer)({
+  });else return sendKeyPressed(peer)({
     string: button
   });
 }
@@ -13648,7 +13649,7 @@ function onClick(ev, peer) {
 
   latesttap = new Date().getTime();
 }
-// CONCATENATED MODULE: ./src/utils/fullscreen.js
+// CONCATENATED MODULE: ./src/js/utils/fullscreen.js
 /* harmony default export */ var fullscreen = (function (elem) {
   if (elem.requestFullscreen) {
     elem.requestFullscreen();
@@ -13660,7 +13661,7 @@ function onClick(ev, peer) {
     elem.msRequestFullscreen();
   }
 });
-// CONCATENATED MODULE: ./src/utils/getRoom.js
+// CONCATENATED MODULE: ./src/js/utils/getRoom.js
 /* harmony default export */ var getRoom = (function () {
   var room = localStorage.getItem('channel');
 
@@ -13674,7 +13675,7 @@ function onClick(ev, peer) {
 
   return room;
 });
-// CONCATENATED MODULE: ./src/app.js
+// CONCATENATED MODULE: ./src/js/app.js
 
 
 

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "cd ./packages/server && npm run build",
     "start": "lerna run start --stream",
     "postinstall": "lerna bootstrap"
   },

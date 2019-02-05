@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "copy:css": "shx cp ./src/css/styles.css ./dist/styles.css",
     "prestart": "npm run build",
     "start": "node index",
-    "build": "webpack"
+    "build": "npm run copy:css && webpack"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
   },
   "dependencies": {
     "ejs": "^2.6.1",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "shx": "^0.3.2"
   }
 }
