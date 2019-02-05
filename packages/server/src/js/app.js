@@ -4,7 +4,7 @@ import initDesktopEvents from "./desktopEvents";
 import initTouchEvents from "./touchEvents";
 import fullscreen from "./utils/fullscreen";
 import getRoom from "./utils/getRoom";
-import { CONNECT, READY, MESSAGE } from "./constants";
+import { CONNECT, READY, MESSAGE } from "./constants/events";
 import { $ } from "./utils/selector";
 
 const isTouchScreen =

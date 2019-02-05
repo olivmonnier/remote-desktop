@@ -13379,7 +13379,7 @@ var simple_peer_default = /*#__PURE__*/__webpack_require__.n(simple_peer);
 var lib = __webpack_require__(37);
 var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
 
-// CONCATENATED MODULE: ./src/js/constants.js
+// CONCATENATED MODULE: ./src/js/constants/events.js
 var CONNECT = "CONNECT";
 var READY = "READY";
 var MESSAGE = "MESSAGE";
@@ -13499,36 +13499,40 @@ function lockChange() {
 function getCoordinates(ev, c) {
   return /touch/.test(ev.type) ? (ev.originalEvent || ev).changedTouches[0]["page" + c] : ev["page" + c];
 }
+// CONCATENATED MODULE: ./src/js/constants/keyboard.js
+var DEFAULT = ["` 1 2 3 4 5 6 7 8 9 0 - = {bksp}", "{tab} q w e r t y u i o p [ ] \\", "{lock} a s d f g h j k l ; ' {enter}", "{shift} z x c v b n m , . / {shift} {up} {down}", ".com @ {space} {hide} {left} {right}"];
+var SHIFT = ["~ ! @ # $ % ^ & * ( ) _ + {bksp}", "{tab} Q W E R T Y U I O P { } |", '{lock} A S D F G H J K L : " {enter}', "{shift} Z X C V B N M < > ? {shift} {up} {down}", ".com @ {space} {hide} {left} {right}"];
+var CAPS = ["` 1 2 3 4 5 6 7 8 9 0 - = {bksp}", "{tab} Q W E R T Y U I O P [ ] \\", "{lock} A S D F G H J K L ; ' {enter}", "{shift} Z X C V B N M , . / {shift} {up} {down}", ".com @ {space} {hide} {left} {right}"];
+var DISPLAY = {
+  "{bksp}": "backspace",
+  "{enter}": "< enter",
+  "{shift}": "shift",
+  "{tab}": "tab",
+  "{lock}": "caps",
+  "{accept}": "Submit",
+  "{space}": " ",
+  "{//}": " ",
+  "{hide}": "hide",
+  "{up}": "up",
+  "{down}": "down",
+  "{left}": "left",
+  "{right}": "right"
+};
 // CONCATENATED MODULE: ./src/js/touchEvents.js
+
 
 
 
 var startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
 var Keyboard = window.SimpleKeyboard.default;
 var keyboard = new Keyboard({
-  onKeyPress: function onKeyPress(button) {
-    return _onKeyPress(button);
-  },
+  onKeyPress: onKeyPress,
   layout: {
-    default: ["` 1 2 3 4 5 6 7 8 9 0 - = {bksp}", "{tab} q w e r t y u i o p [ ] \\", "{lock} a s d f g h j k l ; ' {enter}", "{shift} z x c v b n m , . / {shift} {up} {down}", ".com @ {space} {hide} {left} {right}"],
-    shift: ["~ ! @ # $ % ^ & * ( ) _ + {bksp}", "{tab} Q W E R T Y U I O P { } |", '{lock} A S D F G H J K L : " {enter}', "{shift} Z X C V B N M < > ? {shift} {up} {down}", ".com @ {space} {hide} {left} {right}"],
-    caps: ["` 1 2 3 4 5 6 7 8 9 0 - = {bksp}", "{tab} Q W E R T Y U I O P [ ] \\", "{lock} A S D F G H J K L ; ' {enter}", "{shift} Z X C V B N M , . / {shift} {up} {down}", ".com @ {space} {hide} {left} {right}"]
+    default: DEFAULT,
+    shift: SHIFT,
+    caps: CAPS
   },
-  display: {
-    "{bksp}": "backspace",
-    "{enter}": "< enter",
-    "{shift}": "shift",
-    "{tab}": "tab",
-    "{lock}": "caps",
-    "{accept}": "Submit",
-    "{space}": " ",
-    "{//}": " ",
-    "{hide}": "hide",
-    "{up}": "up",
-    "{down}": "down",
-    "{left}": "left",
-    "{right}": "right"
-  },
+  display: DISPLAY,
   buttonTheme: [{
     class: "keyboard-input-control",
     buttons: "{hide} {up} {down} {left} {right}"
@@ -13583,7 +13587,7 @@ function onHideKeyboard() {
   $keyboard.classList.remove("show");
 }
 
-function _onKeyPress(button) {
+function onKeyPress(button) {
   var peer = window.peer;
   console.log(button);
   if (button === "{shift}") return handleShiftButton();else if (button === "{lock}") return handleCapsButton();else if (button === "{hide}") return onHideKeyboard();else if (button === "{enter}") return sendKeyPressed(peer)({

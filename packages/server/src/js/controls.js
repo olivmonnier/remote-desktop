@@ -1,4 +1,4 @@
-import { MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from "./constants";
+import { MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from "./constants/events";
 
 const mouseButtons = {
   0: "left",
