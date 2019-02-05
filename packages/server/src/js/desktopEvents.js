@@ -1,10 +1,12 @@
 import { sendPosition, sendClick, sendKeyPressed } from "./controls";
 import { $ } from "./utils/selector";
 
+let peer;
 const $content = $("#content");
 
-export default function() {
+export default function(rtc) {
   const handleLockChange = lockChange();
+  peer = rtc;
 
   $content.requestPointerLock =
     $content.requestPointerLock ||
@@ -24,17 +26,17 @@ function lockChange() {
   const handleMouseMove = ev => {
     const { movementX, movementY } = ev;
 
-    return sendPosition(window.peer)(movementX, movementY);
+    return sendPosition(peer)(movementX, movementY);
   };
   const handleClick = ev => {
     const { button } = ev;
 
-    return sendClick(window.peer)(button, false);
+    return sendClick(peer)(button, false);
   };
   const handleDblClick = ev => {
     const { button } = ev;
 
-    return sendClick(window.peer)(button, true);
+    return sendClick(peer)(button, true);
   };
   const handleKeypress = ev => {
     ev.preventDefault();
@@ -46,7 +48,7 @@ function lockChange() {
     const code = ev.which || ev.keyCode;
     const string = String.fromCharCode(code);
 
-    return sendKeyPressed(window.peer)({
+    return sendKeyPressed(peer)({
       alt,
       ctrl,
       shift,

@@ -18,15 +18,15 @@ const socket = io(window.location.origin, {
 });
 
 socket.on("connect", () => {
-  window.peer = onConnect(window.peer, socket);
-});
-socket.on(MESSAGE, data => onMessage(data, window.peer));
+  const peer = onConnect(socket);
 
-if (isTouchScreen) {
-  initTouchEvents();
-} else {
-  initDesktopEvents();
-}
+  if (isTouchScreen) {
+    initTouchEvents(peer);
+  } else {
+    initDesktopEvents(peer);
+  }
+  socket.on(MESSAGE, data => onMessage(data, peer));
+});
 
 function handlerPeer(peer, socket) {
   const $video = $("#remoteVideos");
@@ -49,7 +49,7 @@ function handlerPeer(peer, socket) {
   });
 }
 
-function onConnect(peer, socket) {
+function onConnect(socket) {
   const $app = $("#app");
   const $actions = $("#actions");
   const $btnActions = $("#btnActions");
@@ -57,9 +57,6 @@ function onConnect(peer, socket) {
   const $btnCloseActions = $("#close");
   const $video = $("#remoteVideos");
 
-  if (peer && !peer.destroyed) {
-    peer.destroy();
-  }
   const newPeer = new Peer();
   handlerPeer(newPeer, socket);
 

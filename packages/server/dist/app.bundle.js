@@ -13434,9 +13434,11 @@ function $$(selector) {
 // CONCATENATED MODULE: ./src/js/desktopEvents.js
 
 
+var desktopEvents_peer;
 var $content = $("#content");
-/* harmony default export */ var desktopEvents = (function () {
+/* harmony default export */ var desktopEvents = (function (rtc) {
   var handleLockChange = lockChange();
+  desktopEvents_peer = rtc;
   $content.requestPointerLock = $content.requestPointerLock || $content.mozRequestPointerLock || $content.webkitPointerLockElement;
   $content.addEventListener("click", function () {
     $content.requestPointerLock();
@@ -13450,17 +13452,17 @@ function lockChange() {
   var handleMouseMove = function handleMouseMove(ev) {
     var movementX = ev.movementX,
         movementY = ev.movementY;
-    return sendPosition(window.peer)(movementX, movementY);
+    return sendPosition(desktopEvents_peer)(movementX, movementY);
   };
 
   var handleClick = function handleClick(ev) {
     var button = ev.button;
-    return sendClick(window.peer)(button, false);
+    return sendClick(desktopEvents_peer)(button, false);
   };
 
   var handleDblClick = function handleDblClick(ev) {
     var button = ev.button;
-    return sendClick(window.peer)(button, true);
+    return sendClick(desktopEvents_peer)(button, true);
   };
 
   var handleKeypress = function handleKeypress(ev) {
@@ -13471,7 +13473,7 @@ function lockChange() {
     var meta = ev.metaKey || false;
     var code = ev.which || ev.keyCode;
     var string = String.fromCharCode(code);
-    return sendKeyPressed(window.peer)({
+    return sendKeyPressed(desktopEvents_peer)({
       alt: alt,
       ctrl: ctrl,
       shift: shift,
@@ -13523,9 +13525,8 @@ var DISPLAY = {
 
 
 
-var startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
-var Keyboard = window.SimpleKeyboard.default;
-var keyboard = new Keyboard({
+var touchEvents_peer, startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
+var configKeyboard = {
   onKeyPress: onKeyPress,
   layout: {
     default: DEFAULT,
@@ -13537,28 +13538,31 @@ var keyboard = new Keyboard({
     class: "keyboard-input-control",
     buttons: "{hide} {up} {down} {left} {right}"
   }]
-});
-/* harmony default export */ var touchEvents = (function () {
-  var $keyboard = $("#keyboard");
+};
+var Keyboard = window.SimpleKeyboard.default;
+var keyboard = new Keyboard(configKeyboard);
+var touchEvents_$keyboard = $("#keyboard");
+/* harmony default export */ var touchEvents = (function (rtc) {
+  touchEvents_peer = rtc;
 
   var handleClickKeyboard = function handleClickKeyboard(ev) {
     return onClickKeyboard(ev);
   };
 
   var handleTouchStart = function handleTouchStart(ev) {
-    return onTouchStart(ev, window.peer);
+    return onTouchStart(ev);
   };
 
   var handleTouchMove = function handleTouchMove(ev) {
-    return onTouchMove(ev, window.peer);
+    return onTouchMove(ev, touchEvents_peer);
   };
 
   var handleClick = function handleClick(ev) {
-    return onClick(ev, window.peer);
+    return onClick(ev, touchEvents_peer);
   };
 
   createBtnKeyboard();
-  $keyboard.addEventListener("click", handleClickKeyboard);
+  touchEvents_$keyboard.addEventListener("click", handleClickKeyboard);
   document.addEventListener("touchstart", handleTouchStart);
   document.addEventListener("touchmove", handleTouchMove);
   document.addEventListener("click", handleClick);
@@ -13588,25 +13592,24 @@ function onHideKeyboard() {
 }
 
 function onKeyPress(button) {
-  var peer = window.peer;
   console.log(button);
-  if (button === "{shift}") return handleShiftButton();else if (button === "{lock}") return handleCapsButton();else if (button === "{hide}") return onHideKeyboard();else if (button === "{enter}") return sendKeyPressed(peer)({
+  if (button === "{shift}") return handleShiftButton();else if (button === "{lock}") return handleCapsButton();else if (button === "{hide}") return onHideKeyboard();else if (button === "{enter}") return sendKeyPressed(touchEvents_peer)({
     code: 13
-  });else if (button === "{bksp}") return sendKeyPressed(peer)({
+  });else if (button === "{bksp}") return sendKeyPressed(touchEvents_peer)({
     code: 8
-  });else if (button === "{tab}") return sendKeyPressed(peer)({
+  });else if (button === "{tab}") return sendKeyPressed(touchEvents_peer)({
     code: 9
-  });else if (button === "{up}") return sendKeyPressed(peer)({
+  });else if (button === "{up}") return sendKeyPressed(touchEvents_peer)({
     code: 38
-  });else if (button === "{down}") return sendKeyPressed(peer)({
+  });else if (button === "{down}") return sendKeyPressed(touchEvents_peer)({
     code: 40
-  });else if (button === "{left}") return sendKeyPressed(peer)({
+  });else if (button === "{left}") return sendKeyPressed(touchEvents_peer)({
     code: 37
-  });else if (button === "{right}") return sendKeyPressed(peer)({
+  });else if (button === "{right}") return sendKeyPressed(touchEvents_peer)({
     code: 39
-  });else if (button === "{space}") return sendKeyPressed(peer)({
+  });else if (button === "{space}") return sendKeyPressed(touchEvents_peer)({
     string: " "
-  });else return sendKeyPressed(peer)({
+  });else return sendKeyPressed(touchEvents_peer)({
     string: button
   });
 }
@@ -13704,17 +13707,18 @@ var app_socket = lib_default()(window.location.origin, {
   }
 });
 app_socket.on("connect", function () {
-  window.peer = onConnect(window.peer, app_socket);
-});
-app_socket.on(MESSAGE, function (data) {
-  return onMessage(data, window.peer);
-});
+  var peer = onConnect(app_socket);
 
-if (isTouchScreen) {
-  touchEvents();
-} else {
-  desktopEvents();
-}
+  if (isTouchScreen) {
+    touchEvents(peer);
+  } else {
+    desktopEvents(peer);
+  }
+
+  app_socket.on(MESSAGE, function (data) {
+    return onMessage(data, peer);
+  });
+});
 
 function handlerPeer(peer, socket) {
   var $video = $("#remoteVideos");
@@ -13733,18 +13737,13 @@ function handlerPeer(peer, socket) {
   });
 }
 
-function onConnect(peer, socket) {
+function onConnect(socket) {
   var $app = $("#app");
   var $actions = $("#actions");
   var $btnActions = $("#btnActions");
   var $btnFullscreen = $("#fullscreen");
   var $btnCloseActions = $("#close");
   var $video = $("#remoteVideos");
-
-  if (peer && !peer.destroyed) {
-    peer.destroy();
-  }
-
   var newPeer = new simple_peer_default.a();
   handlerPeer(newPeer, socket);
   $btnActions.addEventListener("click", function () {

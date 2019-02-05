@@ -3,9 +3,8 @@ import getCoordinates from "./utils/getCoordinates";
 import { $ } from "./utils/selector";
 import { DEFAULT, SHIFT, CAPS, DISPLAY } from "./constants/keyboard";
 
-let startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
-const Keyboard = window.SimpleKeyboard.default;
-const keyboard = new Keyboard({
+let peer, startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
+const configKeyboard = {
   onKeyPress,
   layout: {
     default: DEFAULT,
@@ -19,15 +18,18 @@ const keyboard = new Keyboard({
       buttons: "{hide} {up} {down} {left} {right}"
     }
   ]
-});
+};
+const Keyboard = window.SimpleKeyboard.default;
+const keyboard = new Keyboard(configKeyboard);
+const $keyboard = $("#keyboard");
 
-export default function() {
-  const $keyboard = $("#keyboard");
+export default function(rtc) {
+  peer = rtc;
 
   const handleClickKeyboard = ev => onClickKeyboard(ev);
-  const handleTouchStart = ev => onTouchStart(ev, window.peer);
-  const handleTouchMove = ev => onTouchMove(ev, window.peer);
-  const handleClick = ev => onClick(ev, window.peer);
+  const handleTouchStart = ev => onTouchStart(ev);
+  const handleTouchMove = ev => onTouchMove(ev, peer);
+  const handleClick = ev => onClick(ev, peer);
 
   createBtnKeyboard();
 
@@ -66,7 +68,6 @@ function onHideKeyboard() {
 }
 
 function onKeyPress(button) {
-  const peer = window.peer;
   console.log(button);
 
   if (button === "{shift}") return handleShiftButton();
