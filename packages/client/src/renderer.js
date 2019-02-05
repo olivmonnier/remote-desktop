@@ -1,21 +1,28 @@
-import SimplePeer from 'simple-peer';
-import io from 'socket.io-client';
-import { CONNECT, READY, MESSAGE, MOUSE_MOVE, MOUSE_CLICK, KEY_PRESS } from './constants';
-import config from './config';
-import getUserMedia from './getUserMedia';
-import * as robot from 'robotjs';
+import SimplePeer from "simple-peer";
+import io from "socket.io-client";
+import {
+  CONNECT,
+  READY,
+  MESSAGE,
+  MOUSE_MOVE,
+  MOUSE_CLICK,
+  KEY_PRESS
+} from "./constants";
+import config from "./config";
+import getUserMedia from "./getUserMedia";
+import * as robot from "robotjs";
 
 let peers = {};
 
 const SPECIAL_KEYS = new Map([
-  [8, 'backspace'],
-  [9, 'tab'],
-  [13, 'enter'],
-  [27, 'escape'],
-  [37, 'left'],
-  [38, 'up'],
-  [39, 'right'],
-  [40, 'down']
+  [8, "backspace"],
+  [9, "tab"],
+  [13, "enter"],
+  [27, "escape"],
+  [37, "left"],
+  [38, "up"],
+  [39, "right"],
+  [40, "down"]
 ]);
 const socket = io(config.server.host, {
   query: {
@@ -24,13 +31,18 @@ const socket = io(config.server.host, {
 });
 
 function handlerPeer(peer, socket) {
-  peer.on('signal', signal => socket.emit(MESSAGE, JSON.stringify({
-    state: CONNECT,
-    signal
-  })));
+  peer.on("signal", signal =>
+    socket.emit(
+      MESSAGE,
+      JSON.stringify({
+        state: CONNECT,
+        signal
+      })
+    )
+  );
 
-  peer.on('data', function(data) {
-    const d = JSON.parse(data.toString('utf8'));
+  peer.on("data", function(data) {
+    const d = JSON.parse(data.toString("utf8"));
 
     console.log(d);
 
@@ -38,35 +50,32 @@ function handlerPeer(peer, socket) {
 
     if (state === MOUSE_MOVE) {
       const { x: X, y: Y } = robot.getMousePos();
-  
+
       robot.moveMouse(X + mouse.x, Y + mouse.y);
-    }
-    else if (state === MOUSE_CLICK) {
+    } else if (state === MOUSE_CLICK) {
       robot.mouseClick(button, double);
-    } 
-    else if (state === KEY_PRESS) {
+    } else if (state === KEY_PRESS) {
       const { alt, ctrl, shift, meta, code, string } = keys;
-  
-      if (alt) robot.keyToggle('alt', 'down');
-      if (ctrl) robot.keyToggle('control', 'down');
-      if (shift) robot.keyToggle('shift', 'down');
-      if (meta) robot.keyToggle('command', 'down');
-  
+
+      if (alt) robot.keyToggle("alt", "down");
+      if (ctrl) robot.keyToggle("control", "down");
+      if (shift) robot.keyToggle("shift", "down");
+      if (meta) robot.keyToggle("command", "down");
+
       if (SPECIAL_KEYS.has(code)) {
         robot.keyTap(SPECIAL_KEYS.get(code));
-      }
-      else if (string) {
+      } else if (string) {
         robot.typeString(string);
-      } 
-  
-      if (alt) robot.keyToggle('alt', 'up');
-      if (ctrl) robot.keyToggle('control', 'up');
-      if (shift) robot.keyToggle('shift', 'up');
-      if (meta) robot.keyToggle('command', 'up');
+      }
+
+      if (alt) robot.keyToggle("alt", "up");
+      if (ctrl) robot.keyToggle("control", "up");
+      if (shift) robot.keyToggle("shift", "up");
+      if (meta) robot.keyToggle("command", "up");
     }
   });
 
-  peer.on('close', () => peer.destroy());
+  peer.on("close", () => peer.destroy());
 }
 
 function onMessage(data) {
@@ -75,20 +84,18 @@ function onMessage(data) {
   const { state, signal, peerId } = JSON.parse(data);
 
   if (state === READY) {
-    getUserMedia()
-      .then((stream) => {
-        stream.getTracks().forEach(function(track) {
-          console.log('Track Settings', track.getSettings());
-        });
-
-        if (peers[peerId] && !peers[peerId].destroyed) {
-          peers[peerId].destroy();
-        }
-        peers[peerId] = new SimplePeer({ initiator: true, stream });
-        handlerPeer(peers[peerId], socket);
+    getUserMedia().then(stream => {
+      stream.getTracks().forEach(function(track) {
+        console.log("Track Settings", track.getSettings());
       });
-  } 
-  else if (state === CONNECT && !peers[peerId].connected) {
+
+      if (peers[peerId] && !peers[peerId].destroyed) {
+        peers[peerId].destroy();
+      }
+      peers[peerId] = new SimplePeer({ initiator: true, stream });
+      handlerPeer(peers[peerId], socket);
+    });
+  } else if (state === CONNECT && !peers[peerId].connected) {
     peers[peerId].signal(signal);
   }
 }

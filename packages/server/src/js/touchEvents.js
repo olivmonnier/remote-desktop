@@ -1,9 +1,6 @@
-import {
-  sendKeyPressed,
-  sendPosition,
-  sendClick
-} from './controls';
-import getCoordinates from './utils/getCoordinates';
+import { sendKeyPressed, sendPosition, sendClick } from "./controls";
+import getCoordinates from "./utils/getCoordinates";
+import { $ } from "./utils/selector";
 
 let startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
 const Keyboard = window.SimpleKeyboard.default;
@@ -33,42 +30,42 @@ const keyboard = new Keyboard({
     ]
   },
   display: {
-    '{bksp}': 'backspace',
-    '{enter}': '< enter',
-    '{shift}': 'shift',
-    '{tab}': 'tab',
-    '{lock}': 'caps',
-    '{accept}': 'Submit',
-    '{space}': ' ',
-    '{//}': ' ',
-    '{hide}': 'hide',
-    '{up}': 'up',
-    '{down}': 'down',
-    '{left}': 'left',
-    '{right}': 'right'
+    "{bksp}": "backspace",
+    "{enter}": "< enter",
+    "{shift}": "shift",
+    "{tab}": "tab",
+    "{lock}": "caps",
+    "{accept}": "Submit",
+    "{space}": " ",
+    "{//}": " ",
+    "{hide}": "hide",
+    "{up}": "up",
+    "{down}": "down",
+    "{left}": "left",
+    "{right}": "right"
   },
   buttonTheme: [
     {
       class: "keyboard-input-control",
-      buttons: '{hide} {up} {down} {left} {right}'
+      buttons: "{hide} {up} {down} {left} {right}"
     }
   ]
 });
 
-export default function () {
-  const $keyboard = document.querySelector('#keyboard');
+export default function() {
+  const $keyboard = $("#keyboard");
 
-  const handleClickKeyboard = (ev) => onClickKeyboard(ev);
-  const handleTouchStart = (ev) => onTouchStart(ev, window.peer);
-  const handleTouchMove = (ev) => onTouchMove(ev, window.peer);
-  const handleClick = (ev) => onClick(ev, window.peer);
+  const handleClickKeyboard = ev => onClickKeyboard(ev);
+  const handleTouchStart = ev => onTouchStart(ev, window.peer);
+  const handleTouchMove = ev => onTouchMove(ev, window.peer);
+  const handleClick = ev => onClick(ev, window.peer);
 
   createBtnKeyboard();
 
-  $keyboard.addEventListener('click', handleClickKeyboard);
-  document.addEventListener('touchstart', handleTouchStart);
-  document.addEventListener('touchmove', handleTouchMove);
-  document.addEventListener('click', handleClick);
+  $keyboard.addEventListener("click", handleClickKeyboard);
+  document.addEventListener("touchstart", handleTouchStart);
+  document.addEventListener("touchmove", handleTouchMove);
+  document.addEventListener("click", handleClick);
 }
 
 function onClickKeyboard(ev) {
@@ -76,57 +73,45 @@ function onClickKeyboard(ev) {
 }
 
 function createBtnKeyboard() {
-  const $actions = document.querySelector('#actions');
-  const $btnKeyboard = document.createElement('button');
+  const $actions = $("#actions");
+  const $btnKeyboard = document.createElement("button");
 
-  $btnKeyboard.textContent = 'Keyboard';
-  $btnKeyboard.id = 'btnKeyboard';
+  $btnKeyboard.textContent = "Keyboard";
+  $btnKeyboard.id = "btnKeyboard";
 
   $actions.appendChild($btnKeyboard);
 
-  $btnKeyboard.addEventListener('click', onShowKeyboard);
+  $btnKeyboard.addEventListener("click", onShowKeyboard);
 }
 
 function onShowKeyboard() {
-  const $keyboard = document.querySelector('#keyboard');
+  const $keyboard = $("#keyboard");
 
-  $keyboard.classList.add('show');
+  $keyboard.classList.add("show");
 }
 
 function onHideKeyboard() {
-  const $keyboard = document.querySelector('#keyboard');
+  const $keyboard = $("#keyboard");
 
-  $keyboard.classList.remove('show');
+  $keyboard.classList.remove("show");
 }
 
 function onKeyPress(button) {
-  const peer = window.peer
+  const peer = window.peer;
   console.log(button);
 
-  if (button === '{shift}') 
-    return handleShiftButton();
-  else if (button === '{lock}')
-    return handleCapsButton();
-  else if (button === '{hide}') 
-    return onHideKeyboard();
-  else if (button === '{enter}')
-    return sendKeyPressed(peer)({ code: 13 });
-  else if (button === '{bksp}')
-    return sendKeyPressed(peer)({ code: 8 });
-  else if (button === '{tab}')
-    return sendKeyPressed(peer)({ code: 9 });
-  else if (button === '{up}')
-    return sendKeyPressed(peer)({ code: 38 });
-  else if (button === '{down}')
-    return sendKeyPressed(peer)({ code: 40 });
-  else if (button === '{left}')
-    return sendKeyPressed(peer)({ code: 37 });
-  else if (button === '{right}')
-    return sendKeyPressed(peer)({ code: 39 });
-  else if (button === '{space}')
-    return sendKeyPressed(peer)({ string: ' ' });
-  else 
-    return sendKeyPressed(peer)({ string: button });
+  if (button === "{shift}") return handleShiftButton();
+  else if (button === "{lock}") return handleCapsButton();
+  else if (button === "{hide}") return onHideKeyboard();
+  else if (button === "{enter}") return sendKeyPressed(peer)({ code: 13 });
+  else if (button === "{bksp}") return sendKeyPressed(peer)({ code: 8 });
+  else if (button === "{tab}") return sendKeyPressed(peer)({ code: 9 });
+  else if (button === "{up}") return sendKeyPressed(peer)({ code: 38 });
+  else if (button === "{down}") return sendKeyPressed(peer)({ code: 40 });
+  else if (button === "{left}") return sendKeyPressed(peer)({ code: 37 });
+  else if (button === "{right}") return sendKeyPressed(peer)({ code: 39 });
+  else if (button === "{space}") return sendKeyPressed(peer)({ string: " " });
+  else return sendKeyPressed(peer)({ string: button });
 }
 
 function handleShiftButton() {
@@ -150,8 +135,8 @@ function handleCapsButton() {
 function onTouchStart(ev) {
   ev.preventDefault();
 
-  startX = getCoordinates(ev, 'X');
-  startY = getCoordinates(ev, 'Y');
+  startX = getCoordinates(ev, "X");
+  startY = getCoordinates(ev, "Y");
   diffX = 0;
   diffY = 0;
 }
@@ -159,13 +144,13 @@ function onTouchStart(ev) {
 function onTouchMove(ev, peer) {
   ev.preventDefault();
 
-  endX = getCoordinates(ev, 'X');
-  endY = getCoordinates(ev, 'Y');
+  endX = getCoordinates(ev, "X");
+  endY = getCoordinates(ev, "Y");
   diffX = endX - startX;
   diffY = endY - startY;
 
   sendPosition(peer)(diffX, diffY);
-  
+
   startX = endX;
   startY = endY;
 }
@@ -176,14 +161,14 @@ function onClick(ev, peer) {
   const now = new Date().getTime();
   const timesince = now - latesttap;
 
-  if ((timesince < 500) && (timesince > 0)) {
+  if (timesince < 500 && timesince > 0) {
     sendClick(peer)(0, true);
     clearTimeout(taptimeout);
   } else {
     taptimeout = setTimeout(() => {
       sendClick(peer)();
-    }, 550)
+    }, 550);
   }
-      
+
   latesttap = new Date().getTime();
 }

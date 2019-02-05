@@ -13380,18 +13380,18 @@ var lib = __webpack_require__(37);
 var lib_default = /*#__PURE__*/__webpack_require__.n(lib);
 
 // CONCATENATED MODULE: ./src/js/constants.js
-var CONNECT = 'CONNECT';
-var READY = 'READY';
-var MESSAGE = 'MESSAGE';
-var MOUSE_MOVE = 'MOUSE_MOVE';
-var MOUSE_CLICK = 'MOUSE_CLICK';
-var KEY_PRESS = 'KEY_PRESS';
+var CONNECT = "CONNECT";
+var READY = "READY";
+var MESSAGE = "MESSAGE";
+var MOUSE_MOVE = "MOUSE_MOVE";
+var MOUSE_CLICK = "MOUSE_CLICK";
+var KEY_PRESS = "KEY_PRESS";
 // CONCATENATED MODULE: ./src/js/controls.js
 
 var mouseButtons = {
-  0: 'left',
-  1: 'middle',
-  2: 'right'
+  0: "left",
+  1: "middle",
+  2: "right"
 };
 function sendPosition(peer) {
   return function (x, y) {
@@ -13424,18 +13424,26 @@ function sendKeyPressed(peer) {
     }));
   };
 }
+// CONCATENATED MODULE: ./src/js/utils/selector.js
+function $(selector) {
+  return document.querySelector(selector);
+}
+function $$(selector) {
+  return Array.from(document.querySelectorAll(selector));
+}
 // CONCATENATED MODULE: ./src/js/desktopEvents.js
 
-var $content = document.querySelector('#content');
+
+var $content = $("#content");
 /* harmony default export */ var desktopEvents = (function () {
   var handleLockChange = lockChange();
   $content.requestPointerLock = $content.requestPointerLock || $content.mozRequestPointerLock || $content.webkitPointerLockElement;
-  $content.addEventListener('click', function () {
+  $content.addEventListener("click", function () {
     $content.requestPointerLock();
   });
-  document.addEventListener('pointerlockchange', handleLockChange);
-  document.addEventListener('mozpointerlockchange', handleLockChange);
-  document.addEventListener('webkitpointerlockchange', handleLockChange);
+  document.addEventListener("pointerlockchange", handleLockChange);
+  document.addEventListener("mozpointerlockchange", handleLockChange);
+  document.addEventListener("webkitpointerlockchange", handleLockChange);
 });
 
 function lockChange() {
@@ -13475,23 +13483,24 @@ function lockChange() {
 
   return function () {
     if (document.pointerLockElement === $content) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('click', handleClick);
-      document.addEventListener('dblclick', handleDblClick);
-      document.addEventListener('keypress', handleKeypress);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("click", handleClick);
+      document.addEventListener("dblclick", handleDblClick);
+      document.addEventListener("keypress", handleKeypress);
     } else {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('click', handleClick);
-      document.removeEventListener('dblclick', handleDblClick);
-      document.removeEventListener('keypress', handleKeypress);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("click", handleClick);
+      document.removeEventListener("dblclick", handleDblClick);
+      document.removeEventListener("keypress", handleKeypress);
     }
   };
 }
 // CONCATENATED MODULE: ./src/js/utils/getCoordinates.js
 function getCoordinates(ev, c) {
-  return /touch/.test(ev.type) ? (ev.originalEvent || ev).changedTouches[0]['page' + c] : ev['page' + c];
+  return /touch/.test(ev.type) ? (ev.originalEvent || ev).changedTouches[0]["page" + c] : ev["page" + c];
 }
 // CONCATENATED MODULE: ./src/js/touchEvents.js
+
 
 
 var startX, startY, endX, endY, diffX, diffY, latesttap, taptimeout;
@@ -13506,27 +13515,27 @@ var keyboard = new Keyboard({
     caps: ["` 1 2 3 4 5 6 7 8 9 0 - = {bksp}", "{tab} Q W E R T Y U I O P [ ] \\", "{lock} A S D F G H J K L ; ' {enter}", "{shift} Z X C V B N M , . / {shift} {up} {down}", ".com @ {space} {hide} {left} {right}"]
   },
   display: {
-    '{bksp}': 'backspace',
-    '{enter}': '< enter',
-    '{shift}': 'shift',
-    '{tab}': 'tab',
-    '{lock}': 'caps',
-    '{accept}': 'Submit',
-    '{space}': ' ',
-    '{//}': ' ',
-    '{hide}': 'hide',
-    '{up}': 'up',
-    '{down}': 'down',
-    '{left}': 'left',
-    '{right}': 'right'
+    "{bksp}": "backspace",
+    "{enter}": "< enter",
+    "{shift}": "shift",
+    "{tab}": "tab",
+    "{lock}": "caps",
+    "{accept}": "Submit",
+    "{space}": " ",
+    "{//}": " ",
+    "{hide}": "hide",
+    "{up}": "up",
+    "{down}": "down",
+    "{left}": "left",
+    "{right}": "right"
   },
   buttonTheme: [{
     class: "keyboard-input-control",
-    buttons: '{hide} {up} {down} {left} {right}'
+    buttons: "{hide} {up} {down} {left} {right}"
   }]
 });
 /* harmony default export */ var touchEvents = (function () {
-  var $keyboard = document.querySelector('#keyboard');
+  var $keyboard = $("#keyboard");
 
   var handleClickKeyboard = function handleClickKeyboard(ev) {
     return onClickKeyboard(ev);
@@ -13545,10 +13554,10 @@ var keyboard = new Keyboard({
   };
 
   createBtnKeyboard();
-  $keyboard.addEventListener('click', handleClickKeyboard);
-  document.addEventListener('touchstart', handleTouchStart);
-  document.addEventListener('touchmove', handleTouchMove);
-  document.addEventListener('click', handleClick);
+  $keyboard.addEventListener("click", handleClickKeyboard);
+  document.addEventListener("touchstart", handleTouchStart);
+  document.addEventListener("touchmove", handleTouchMove);
+  document.addEventListener("click", handleClick);
 });
 
 function onClickKeyboard(ev) {
@@ -13556,43 +13565,43 @@ function onClickKeyboard(ev) {
 }
 
 function createBtnKeyboard() {
-  var $actions = document.querySelector('#actions');
-  var $btnKeyboard = document.createElement('button');
-  $btnKeyboard.textContent = 'Keyboard';
-  $btnKeyboard.id = 'btnKeyboard';
+  var $actions = $("#actions");
+  var $btnKeyboard = document.createElement("button");
+  $btnKeyboard.textContent = "Keyboard";
+  $btnKeyboard.id = "btnKeyboard";
   $actions.appendChild($btnKeyboard);
-  $btnKeyboard.addEventListener('click', onShowKeyboard);
+  $btnKeyboard.addEventListener("click", onShowKeyboard);
 }
 
 function onShowKeyboard() {
-  var $keyboard = document.querySelector('#keyboard');
-  $keyboard.classList.add('show');
+  var $keyboard = $("#keyboard");
+  $keyboard.classList.add("show");
 }
 
 function onHideKeyboard() {
-  var $keyboard = document.querySelector('#keyboard');
-  $keyboard.classList.remove('show');
+  var $keyboard = $("#keyboard");
+  $keyboard.classList.remove("show");
 }
 
 function _onKeyPress(button) {
   var peer = window.peer;
   console.log(button);
-  if (button === '{shift}') return handleShiftButton();else if (button === '{lock}') return handleCapsButton();else if (button === '{hide}') return onHideKeyboard();else if (button === '{enter}') return sendKeyPressed(peer)({
+  if (button === "{shift}") return handleShiftButton();else if (button === "{lock}") return handleCapsButton();else if (button === "{hide}") return onHideKeyboard();else if (button === "{enter}") return sendKeyPressed(peer)({
     code: 13
-  });else if (button === '{bksp}') return sendKeyPressed(peer)({
+  });else if (button === "{bksp}") return sendKeyPressed(peer)({
     code: 8
-  });else if (button === '{tab}') return sendKeyPressed(peer)({
+  });else if (button === "{tab}") return sendKeyPressed(peer)({
     code: 9
-  });else if (button === '{up}') return sendKeyPressed(peer)({
+  });else if (button === "{up}") return sendKeyPressed(peer)({
     code: 38
-  });else if (button === '{down}') return sendKeyPressed(peer)({
+  });else if (button === "{down}") return sendKeyPressed(peer)({
     code: 40
-  });else if (button === '{left}') return sendKeyPressed(peer)({
+  });else if (button === "{left}") return sendKeyPressed(peer)({
     code: 37
-  });else if (button === '{right}') return sendKeyPressed(peer)({
+  });else if (button === "{right}") return sendKeyPressed(peer)({
     code: 39
-  });else if (button === '{space}') return sendKeyPressed(peer)({
-    string: ' '
+  });else if (button === "{space}") return sendKeyPressed(peer)({
+    string: " "
   });else return sendKeyPressed(peer)({
     string: button
   });
@@ -13616,16 +13625,16 @@ function handleCapsButton() {
 
 function onTouchStart(ev) {
   ev.preventDefault();
-  startX = getCoordinates(ev, 'X');
-  startY = getCoordinates(ev, 'Y');
+  startX = getCoordinates(ev, "X");
+  startY = getCoordinates(ev, "Y");
   diffX = 0;
   diffY = 0;
 }
 
 function onTouchMove(ev, peer) {
   ev.preventDefault();
-  endX = getCoordinates(ev, 'X');
-  endY = getCoordinates(ev, 'Y');
+  endX = getCoordinates(ev, "X");
+  endY = getCoordinates(ev, "Y");
   diffX = endX - startX;
   diffY = endY - startY;
   sendPosition(peer)(diffX, diffY);
@@ -13663,13 +13672,13 @@ function onClick(ev, peer) {
 });
 // CONCATENATED MODULE: ./src/js/utils/getRoom.js
 /* harmony default export */ var getRoom = (function () {
-  var room = localStorage.getItem('channel');
+  var room = localStorage.getItem("channel");
 
   if (!room) {
-    room = prompt('Enter a room');
+    room = prompt("Enter a room");
 
-    if (room !== '') {
-      localStorage.setItem('channel', room);
+    if (room !== "") {
+      localStorage.setItem("channel", room);
     }
   }
 
@@ -13683,13 +13692,14 @@ function onClick(ev, peer) {
 
 
 
-var isTouchScreen = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch;
+
+var isTouchScreen = "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch;
 var app_socket = lib_default()(window.location.origin, {
   query: {
     token: getRoom()
   }
 });
-app_socket.on('connect', function () {
+app_socket.on("connect", function () {
   window.peer = onConnect(window.peer, app_socket);
 });
 app_socket.on(MESSAGE, function (data) {
@@ -13703,29 +13713,29 @@ if (isTouchScreen) {
 }
 
 function handlerPeer(peer, socket) {
-  var $video = document.querySelector('#remoteVideos');
-  peer.on('signal', function (signal) {
+  var $video = $("#remoteVideos");
+  peer.on("signal", function (signal) {
     socket.emit(MESSAGE, JSON.stringify({
       state: CONNECT,
       peerId: peer._id,
       signal: signal
     }));
   });
-  peer.on('stream', function (stream) {
-    $video.srcObject = stream; // $video.play()
+  peer.on("stream", function (stream) {
+    $video.srcObject = stream;
   });
-  peer.on('close', function () {
+  peer.on("close", function () {
     peer.destroy();
   });
 }
 
 function onConnect(peer, socket) {
-  var $app = document.querySelector('#app');
-  var $actions = document.querySelector('#actions');
-  var $btnActions = document.querySelector('#btnActions');
-  var $btnFullscreen = document.querySelector('#fullscreen');
-  var $btnCloseActions = document.querySelector('#close');
-  var $video = document.querySelector('#remoteVideos');
+  var $app = $("#app");
+  var $actions = $("#actions");
+  var $btnActions = $("#btnActions");
+  var $btnFullscreen = $("#fullscreen");
+  var $btnCloseActions = $("#close");
+  var $video = $("#remoteVideos");
 
   if (peer && !peer.destroyed) {
     peer.destroy();
@@ -13733,18 +13743,18 @@ function onConnect(peer, socket) {
 
   var newPeer = new simple_peer_default.a();
   handlerPeer(newPeer, socket);
-  $btnActions.addEventListener('click', function () {
-    this.classList.add('hide');
-    $actions.classList.add('show');
+  $btnActions.addEventListener("click", function () {
+    this.classList.add("hide");
+    $actions.classList.add("show");
   });
-  $btnFullscreen.addEventListener('click', function (e) {
+  $btnFullscreen.addEventListener("click", function (e) {
     e.stopPropagation();
     var el = isTouchScreen ? $app : $video;
     fullscreen(el);
   });
-  $btnCloseActions.addEventListener('click', function (e) {
-    $actions.classList.remove('show');
-    $btnActions.classList.remove('hide');
+  $btnCloseActions.addEventListener("click", function (e) {
+    $actions.classList.remove("show");
+    $btnActions.classList.remove("hide");
   });
   socket.emit(MESSAGE, JSON.stringify({
     state: READY,
