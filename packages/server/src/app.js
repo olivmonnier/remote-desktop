@@ -36,7 +36,7 @@ function handlerPeer(peer, socket) {
   })
   peer.on('stream', function (stream) {
     $video.srcObject = stream
-    $video.play()
+    // $video.play()
   })
   peer.on('close', () => {
     peer.destroy()

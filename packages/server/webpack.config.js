@@ -23,6 +23,6 @@ module.exports = {
     extensions: ['.js']
   },
   optimization: {
-    minimize: true
+    minimize: false
   }
 }
